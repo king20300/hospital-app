@@ -17,6 +17,8 @@ import java.util.stream.Stream;
 
 import tw.edu.fju.www.sedia.hospital.database.DBHelper;
 
+import static tw.edu.fju.www.sedia.hospital.database.DBHelper.wdb;
+
 public class FetchHospitalInfoUtil extends AsyncTask<String, Integer, Void> {
 
     private DBHelper dbHelper;
@@ -52,12 +54,18 @@ public class FetchHospitalInfoUtil extends AsyncTask<String, Integer, Void> {
             String csvData = csvDataBuilder.toString();
             String[] dataRows = csvData.split("\n");
 
+            wdb.beginTransaction();
+
             Stream.of(dataRows)
                     .skip(1)
                     .forEach(hospital -> {
                         dbHelper.insertData(hospital.split(","));
                         publishProgress((int) ((dbHelper.getCurrentLength() / (double) dataRows.length) * 100));
                     });
+
+            wdb.setTransactionSuccessful();
+            wdb.endTransaction();
+
 
 //            System.out.println(firstRowValues[0]);
 //            System.out.println(hospitals.get(0)[1]);

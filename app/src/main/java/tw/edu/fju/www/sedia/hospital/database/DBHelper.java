@@ -65,7 +65,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String result = sql.substring(0, sql.length() - 1);
         try {
-            wdb.execSQL(result + ");");
+            wdb.compileStatement(result + ");").executeInsert();
         } catch (SQLiteException exc) {
             System.out.println(exc.getMessage());
         }
