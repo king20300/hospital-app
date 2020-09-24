@@ -11,8 +11,9 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="250sp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="680dp"
+        android:layout_marginTop="624dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

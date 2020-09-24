@@ -18,14 +18,22 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DBName = "hospital_info";
     public static SQLiteDatabase wdb;
     public static SQLiteDatabase rdb;
+    private static DBHelper instance;
     private double currentLength;
 
 //    public static final String tableName = "hospital";
 
-    public DBHelper(Activity activity) {
+    private DBHelper(Activity activity) {
         super(activity, DBName, null, DBVersion);
         wdb = this.getWritableDatabase();
         rdb = this.getReadableDatabase();
+    }
+
+    public static DBHelper getInstance(Activity activity) {
+        if (instance == null) {
+            instance = new DBHelper(activity);
+        }
+        return instance;
     }
 
     @Override
@@ -53,6 +61,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void insertData(String[] hospital) {
 
+
         StringBuilder sql = new StringBuilder("INSERT INTO hospital VALUES (");
 
         Stream.of(hospital).forEach(columnValue -> {
@@ -65,7 +74,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String result = sql.substring(0, sql.length() - 1);
         try {
-            wdb.compileStatement(result + ");").executeInsert();
+            wdb.execSQL(result + ");");
         } catch (SQLiteException exc) {
             System.out.println(exc.getMessage());
         }
@@ -141,6 +150,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public int getInsertedDataQuantity() {
-        return rdb.rawQuery("select * from hospital limit 5", null).getCount();
+        return rdb.rawQuery("select * from hospital", null).getCount();
     }
 }

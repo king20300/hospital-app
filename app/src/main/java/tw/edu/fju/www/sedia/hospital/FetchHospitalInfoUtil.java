@@ -27,7 +27,7 @@ public class FetchHospitalInfoUtil extends AsyncTask<String, Integer, Void> {
 
     public FetchHospitalInfoUtil(Activity activity, ProgressBar progressBar) {
         this.activity = activity;
-        this.dbHelper = new DBHelper(this.activity);
+        this.dbHelper = DBHelper.getInstance(this.activity);
         this.progressBar = progressBar;
     }
 

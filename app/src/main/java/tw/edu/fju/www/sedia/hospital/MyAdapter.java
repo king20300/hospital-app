@@ -1,29 +1,19 @@
 package tw.edu.fju.www.sedia.hospital;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import tw.edu.fju.www.sedia.hospital.database.DBHelper;
 import tw.edu.fju.www.sedia.hospital.database.SearchMode;
-
-import static android.Manifest.permission.CALL_PHONE;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     private Activity activity;
@@ -44,7 +34,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public MyAdapter(Activity activity, List<String[]> dataSet) {
         this.activity = activity;
         this.dataSet = dataSet;
-        this.dbHelper = new DBHelper(activity);
+        this.dbHelper = DBHelper.getInstance(this.activity);
     }
 
     @NonNull
@@ -56,7 +46,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 //            String hospitalName = ((TextView) v.findViewById(R.id.hospitalName)).getText().toString();
             String hospitalAddress = ((TextView) v.findViewById(R.id.hospitalAddress)).getText().toString();
 
-            List<String[]> resultFromSQLite = dbHelper.getResultFromSQLite(null, hospitalAddress, SearchMode.FIND_BY_ADDRESS); // getresultfromsqlite only returns one hospital here, be sure to get index of 0!
+            List<String[]> resultFromSQLite = dbHelper.getResultFromSQLite(null, hospitalAddress, SearchMode.FIND_BY_ADDRESS);
             String[] specificHospitalInfo = resultFromSQLite.get(0);
 //            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + resultFromSQLite[2]));
 //            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

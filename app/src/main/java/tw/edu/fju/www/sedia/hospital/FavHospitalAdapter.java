@@ -26,7 +26,7 @@ public class FavHospitalAdapter extends RecyclerView.Adapter<FavHospitalAdapter.
     public FavHospitalAdapter(Activity activity, List<String[]> data) {
         this.data = data;
         this.activity = activity;
-        this.dbHelper = new DBHelper(this.activity);
+        this.dbHelper = DBHelper.getInstance(this.activity);
     }
 
     public class FavHospitalViewHolder extends RecyclerView.ViewHolder {

@@ -7,56 +7,35 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <EditText
-        android:id="@+id/searchText"
-        android:layout_width="350sp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
-        android:ems="10"
-        android:hint=""
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/myRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="500sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <Button
-        android:id="@+id/getLocationBtn"
+        android:id="@+id/search_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="查詢在我附近的醫院!"
-        app:layout_constraintBottom_toTopOf="@+id/myRecyclerView"
+        android:layout_marginTop="200dp"
+        android:background="@drawable/search"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchText" />
-
-    <Spinner
-        android:id="@+id/districts_spinner"
-        android:layout_width="150sp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="32dp"
-        android:spinnerMode="dialog"
-        android:textAlignment="center"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/myFavHospital"
+        android:id="@+id/nearby_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="我的最愛"
-        app:layout_constraintBottom_toTopOf="@+id/myRecyclerView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.25"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/nearby"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchText" />
+        app:layout_constraintTop_toBottomOf="@+id/search_btn" />
+
+    <Button
+        android:id="@+id/favorites_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="60dp"
+        android:background="@drawable/favorites"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

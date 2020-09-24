@@ -25,23 +25,25 @@ import okhttp3.Request;
 import tw.edu.fju.www.sedia.hospital.MainActivity;
 import tw.edu.fju.www.sedia.hospital.R;
 
-public class GetNearbyUtil extends AsyncTask<double[], Integer, String> {
+public class GetNearbyUtil extends AsyncTask<Double, Integer, String> {
     private String apiKey;
     private OkHttpClient client;
     private String requestUrl;
     private WeakReference<Activity> weakReferenceContext;
-    private double[] userLocation;
+    private double[] userLocation = new double[2];
 
     public GetNearbyUtil(Activity activity) {
         this.weakReferenceContext = new WeakReference<>(activity);
     }
 
     @Override
-    protected String doInBackground(double[]... location) {
-        apiKey = "fQM9UrN1mF5EBl9Gp7GGCfxd4XWD74An";
-        userLocation = location[0];
+    protected String doInBackground(Double... location) {
+        userLocation[0] = location[0];
+        userLocation[1] = location[1];
+
+        apiKey = this.weakReferenceContext.get().getResources().getString(R.string.tomtom_api_key);
         client = new OkHttpClient();
-        requestUrl = "https://api.tomtom.com/search/2/nearbySearch/.json?lat=" + location[0][0] + "&lon=" + location[0][1] + "&limit=30&countrySet=TW&radius=10000&language=zh-TW&categorySet=7321&key=" + apiKey;
+        requestUrl = "https://api.tomtom.com/search/2/nearbySearch/.json?lat=" + location[0] + "&lon=" + location[1] + "&limit=30&countrySet=TW&radius=10000&language=zh-TW&categorySet=7321&key=" + apiKey;
 
         String result = null;
         Request request = new Request.Builder()
@@ -50,6 +52,12 @@ public class GetNearbyUtil extends AsyncTask<double[], Integer, String> {
 
         try {
             result = client.newCall(request).execute().body().string();
+
+            System.out.println(result);
+
+            FileWriter writer = new FileWriter("/data/data/tw.edu.fju.www.sedia.hospital/nearby-info.txt");
+            writer.write(result);
+            writer.flush();
         } catch (IOException ignore) { }
 
         return result;
