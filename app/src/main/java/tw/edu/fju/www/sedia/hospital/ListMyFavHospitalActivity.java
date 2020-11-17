@@ -12,6 +12,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,16 +33,17 @@ import tw.edu.fju.www.sedia.hospital.database.SearchMode;
 
 public class ListMyFavHospitalActivity extends AppCompatActivity {
 
-    private TextView myFavHospitalName;
     private SharedPreferences sharedPreferences;
     private DBHelper dbHelper;
-    private RecyclerView favHospitalRecyclerView;
     private FavHospitalAdapter adapter;
+    private GridView favHospitalGridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_my_fav_hospital);
+
+        favHospitalGridView = findViewById(R.id.fav_hospital_gridview);
 
         getSupportActionBar().setBackgroundDrawable(getDrawable(R.drawable.action_bar_background));
         getSupportActionBar().setTitle("我的最愛");
@@ -62,15 +67,8 @@ public class ListMyFavHospitalActivity extends AppCompatActivity {
     }
 
     private void listFavHospital() {
-        favHospitalRecyclerView = findViewById(R.id.favHospitalRecyclerView);
-
-        favHospitalRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        favHospitalRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
         dbHelper = DBHelper.getInstance(this);
-        myFavHospitalName = findViewById(R.id.favHospitalName);
-
-        sharedPreferences = getSharedPreferences("HospitalInfoActivity", Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("favorite_hospital", Context.MODE_PRIVATE);
         Map<String, ?> favHospitalIds = sharedPreferences.getAll();
 
         List<String[]> hospitals = new ArrayList<>();
@@ -78,7 +76,7 @@ public class ListMyFavHospitalActivity extends AppCompatActivity {
         favHospitalIds.values().iterator()
                 .forEachRemaining(id -> {
                     String[] hospital = dbHelper.getResultFromSQLite((String) id, null, SearchMode.FIND_BY_ID).get(0);
-                    hospitals.add(new String[]{(String) id, hospital[0], hospital[1], hospital[2]});
+                    hospitals.add(new String[]{(String) id, hospital[0], hospital[1], hospital[2], hospital[3]});
                 });
 
         if (hospitals.size() == 0) {
@@ -86,19 +84,18 @@ public class ListMyFavHospitalActivity extends AppCompatActivity {
         }
 
         adapter = new FavHospitalAdapter(this, hospitals);
-        favHospitalRecyclerView.setAdapter(adapter);
+        this.favHospitalGridView.setAdapter(adapter);
+        this.favHospitalGridView.setOnItemClickListener((parent, view, position, id) -> {
+            String[] hospital = hospitals.get(position);
+            Intent viewHospitalInfo = new Intent(this, HospitalInfoActivity.class);
+            viewHospitalInfo.putExtra("hospitalId", hospital[0]);
+            viewHospitalInfo.putExtra("hospitalName", hospital[1]);
+            viewHospitalInfo.putExtra("hospitalAddress", hospital[2]);
+            viewHospitalInfo.putExtra("hospitalTelephone", hospital[3]);
+            viewHospitalInfo.putExtra("hasDivision", hospital[4]);
 
-//        String[] Ids = favHospitalIds.toArray(new String[favHospitalIds.size()]);
-//
-
-//
-//        for (String id : Ids) {
-//            String[] hospital = dbHelper.getResultFromSQLite(id, null, SearchMode.FIND_BY_ID).get(0);
-//            hospitals.add(new String[]{id, hospital[0], hospital[1], hospital[2]});
-//        }
-//
-//        adapter = new FavHospitalAdapter(this, hospitals);
-//        favHospitalRecyclerView.setAdapter(adapter);
+            startActivity(viewHospitalInfo);
+        });
     }
 
     @Override

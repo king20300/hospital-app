@@ -1,6 +1,8 @@
 package tw.edu.fju.www.sedia.hospital.database;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -38,7 +40,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
 //        List<String[]> hospitals = this.getData();
 
         final String sql = "CREATE TABLE hospital (_id Text PRIMARY KEY,hospital_name Text,hospital_belong Text," +
@@ -49,7 +50,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "medical_radiologist INTEGER,medical_radiologist_intern INTEGER,physical_pherapist_intern INTEGER," +
                 "occupational_pherapist_intern INTEGER,respiratory_therapist INTEGER,counseling_psychologist INTEGER," +
                 "clinical_psychologist INTEGER,nutritionist INTEGER,speech_therapist INTEGER,dental_technician INTEGER," +
-                "audiologist INTEGER,dental_technician_intern INTEGER,optometrist INTEGER,optometrist_intern INTEGER)";
+                "audiologist INTEGER,dental_technician_intern INTEGER,optometrist INTEGER,optometrist_intern INTEGER, hasDivision INTEGER)";
         db.execSQL("DROP TABLE IF EXISTS hospital");
         db.execSQL(sql);
     }
@@ -59,7 +60,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void insertData(String[] hospital) {
+    public void insertData(String[] hospital, boolean hasDivision) {
 
 
         StringBuilder sql = new StringBuilder("INSERT INTO hospital VALUES (");
@@ -74,7 +75,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String result = sql.substring(0, sql.length() - 1);
         try {
-            wdb.execSQL(result + ");");
+//            wdb.execSQL(result + ");");
+            if (hasDivision) {
+                wdb.execSQL(result + ", 1" + ");");
+            } else {
+                wdb.execSQL(result + ", 0" + ");");
+            }
         } catch (SQLiteException exc) {
             System.out.println(exc.getMessage());
         }
@@ -94,18 +100,18 @@ public class DBHelper extends SQLiteOpenHelper {
             case FIND_BY_ADDRESS:
                 assert searchString != null;
 
-                cursor = rdb.rawQuery("SELECT _id, hospital_name, address, telephone from hospital WHERE hospital_name LIKE '%" + searchString + "%' OR address LIKE '%" + searchString + "%';",
+                cursor = rdb.rawQuery("SELECT _id, hospital_name, address, telephone, hasDivision from hospital WHERE hospital_name LIKE '%" + searchString + "%' OR address LIKE '%" + searchString + "%';",
                         null);
 
                 if (cursor.getColumnCount() != 0) {
                     results = new ArrayList<>();
                     while(cursor.moveToNext()) {
-                        String[] hospitalInfo = new String[4];
+                        String[] hospitalInfo = new String[5];
                         hospitalInfo[0] = cursor.getString(1); // hospital name
                         hospitalInfo[1] = cursor.getString(2); // hospital address
                         hospitalInfo[2] = cursor.getString(3); // hospital telephone
                         hospitalInfo[3] = cursor.getString(0); // hospital id
-
+                        hospitalInfo[4] = String.valueOf(cursor.getInt(4));
                         results.add(hospitalInfo);
                     }
                 }
@@ -114,22 +120,16 @@ public class DBHelper extends SQLiteOpenHelper {
                 assert id != null;
 
                 results = new ArrayList<>();
-                cursor = rdb.rawQuery("SELECT hospital_name, address, telephone from hospital WHERE _id IS " + id + ";", null);
+                cursor = rdb.rawQuery("SELECT hospital_name, address, telephone, hasDivision from hospital WHERE _id IS " + id + ";", null);
                 while(cursor.moveToNext()) {
-                    String[] fullInfo = new String[3];
+                    String[] fullInfo = new String[4];
                     fullInfo[0] = cursor.getString(0);
                     fullInfo[1] = cursor.getString(1);
                     fullInfo[2] = cursor.getString(2);
+                    fullInfo[3] = String.valueOf(cursor.getInt(3));
                     results.add(fullInfo);
                 }
                 break;
-//            case FIND_BY_ID:
-//                // TODO: 測試
-//                assert id != null;
-//                results = new ArrayList<>();
-//                cursor = rdb.rawQuery("SELECT hospital_name from hospital WHERE _id is " + id, null);
-//                String[] result = cursor.moveToFirst() ? new String[]{cursor.getString(0)} : new String[]{};
-//                results.add(result);
         }
 
         cursor.close();

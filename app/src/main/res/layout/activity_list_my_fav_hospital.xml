@@ -6,10 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".ListMyFavHospitalActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favHospitalRecyclerView"
-        android:layout_width="409dp"
-        android:layout_height="729dp"
+    <GridView
+        android:id="@+id/fav_hospital_gridview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20sp"
+        android:layout_marginBottom="20sp"
+        android:numColumns="2"
+        android:verticalSpacing="20sp"
+        android:horizontalSpacing="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

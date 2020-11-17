@@ -59,7 +59,14 @@ public class FetchHospitalInfoUtil extends AsyncTask<String, Integer, Void> {
             Stream.of(dataRows)
                     .skip(1)
                     .forEach(hospital -> {
-                        dbHelper.insertData(hospital.split(","));
+                        System.out.println(hospital);
+                        
+                        String[] hospitalColumnValues = hospital.split(",");
+                        if (hospitalColumnValues[3].contains("醫院")) {
+                            dbHelper.insertData(hospitalColumnValues, true);
+                        } else {
+                            dbHelper.insertData(hospitalColumnValues, false);
+                        }
                         publishProgress((int) ((dbHelper.getCurrentLength() / (double) dataRows.length) * 100));
                     });
 

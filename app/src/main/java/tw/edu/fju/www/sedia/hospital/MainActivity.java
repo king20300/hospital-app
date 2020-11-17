@@ -3,19 +3,15 @@ package tw.edu.fju.www.sedia.hospital;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -26,43 +22,44 @@ import java.io.IOException;
 import java.util.List;
 
 import tw.edu.fju.www.sedia.hospital.map.GetNearbyUtil;
-import tw.edu.fju.www.sedia.hospital.map.MarkerMapsActivity;
+import tw.edu.fju.www.sedia.hospital.register.ViewRegisterInfoActivity;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button searchBtn;
     private Button favBtn;
     private Button nearbyBtn;
+    private Button myNotificationBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        searchBtn = findViewById(R.id.search_btn);
-        favBtn = findViewById(R.id.favorites_btn);
-        nearbyBtn = findViewById(R.id.nearby_btn);
-
-//        requestPermission();
-//        handleListHospitalBtnClick();
-//        searchHospitalBtnClicked();
-        searchBtnClicked();
-        favBtnClicked();
-        nearbyBtnClicked();
+        (searchBtn = findViewById(R.id.search_btn)).setOnClickListener(this);
+        (favBtn = findViewById(R.id.favorites_btn)).setOnClickListener(this);
+        (nearbyBtn = findViewById(R.id.nearby_btn)).setOnClickListener(this);
+        (myNotificationBtn = findViewById(R.id.my_notification_btn)).setOnClickListener(this);
     }
 
-    private void searchBtnClicked() {
-        this.searchBtn.setOnClickListener(view -> startActivity(new Intent(this, SearchHospitalActivity.class)));
-    }
-
-    private void favBtnClicked() {
-        this.favBtn.setOnClickListener(view -> startActivity(new Intent(this, ListMyFavHospitalActivity.class)));
-    }
-
-    private void nearbyBtnClicked() {
-        this.nearbyBtn.setOnClickListener(view -> requestPermission());
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.search_btn:
+                startActivity(new Intent(this, SearchHospitalActivity.class));
+                break;
+            case R.id.favorites_btn:
+                startActivity(new Intent(this, ListMyFavHospitalActivity.class));
+                break;
+            case R.id.nearby_btn:
+                requestPermission();
+                break;
+            case R.id.my_notification_btn:
+                startActivity(new Intent(this, ViewRegisterInfoActivity.class));
+                break;
+        }
     }
 
     private void requestPermission() {

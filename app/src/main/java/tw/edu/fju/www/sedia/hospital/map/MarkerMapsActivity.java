@@ -49,8 +49,7 @@ public class MarkerMapsActivity extends FragmentActivity implements OnMapReadyCa
         String jsonData = getIntent().getStringExtra("jsonData");
         double[] userLocation = getIntent().getDoubleArrayExtra("userLocation");
 
-        JsonParser jsonParser = new JsonParser();
-        JsonElement jsonelement = jsonParser.parse(jsonData);
+        JsonElement jsonelement = JsonParser.parseString(jsonData);
         JsonArray resultArray = jsonelement.getAsJsonObject().get("results").getAsJsonArray();
         resultArray.iterator().forEachRemaining(this::resolveJsonData);
 

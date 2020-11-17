@@ -32,4 +32,10 @@
         android:layout_width="213dp"
         android:layout_height="wrap_content"
         android:text="加入我的最愛!" />
+
+    <Button
+        android:id="@+id/register_hospital"
+        android:layout_width="213dp"
+        android:layout_height="wrap_content"
+        android:text="預約" />
 </LinearLayout>

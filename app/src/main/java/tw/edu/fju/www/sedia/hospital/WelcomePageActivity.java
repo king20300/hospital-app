@@ -38,6 +38,7 @@ public class WelcomePageActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private FetchHospitalInfoUtil fetchHospitalInfoUtil;
     private DBHelper dbHelper;
+    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,13 +100,14 @@ public class WelcomePageActivity extends AppCompatActivity {
                             startActivity(new Intent(Settings.Panel.ACTION_WIFI));
                         });
             }
-            builder.show();
+            alertDialog = builder.show();
         }
 
         cm.registerDefaultNetworkCallback(new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
+                if (alertDialog != null) alertDialog.dismiss();
                 fetchHospitalInfoUtil = new FetchHospitalInfoUtil(WelcomePageActivity.this, progressBar);
                 fetchHospitalInfoUtil.execute("https://www.mohw.gov.tw/dl-61786-4bd02cd5-3d91-4f99-9556-363233aa8059.html");
             }

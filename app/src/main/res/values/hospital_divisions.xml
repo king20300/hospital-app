@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="divisions_array">
+        <item>心臟內科</item>
+        <item>精神科</item>
+        <item>胸腔外科</item>
+    </string-array>
+</resources>

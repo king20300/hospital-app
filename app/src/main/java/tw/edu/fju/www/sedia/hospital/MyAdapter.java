@@ -61,6 +61,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 //            System.out.println(resultFromSQLite[1]);
             intent.putExtra("hospitalTelephone", specificHospitalInfo[2]);
             intent.putExtra("hospitalId", specificHospitalInfo[3]);
+            intent.putExtra("hasDivision", specificHospitalInfo[4]);
 
 //            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             activity.startActivity(intent);
