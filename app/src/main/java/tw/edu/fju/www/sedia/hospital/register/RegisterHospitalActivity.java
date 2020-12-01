@@ -5,11 +5,11 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.icu.util.Calendar;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,14 +31,18 @@ public class RegisterHospitalActivity extends AppCompatActivity implements View.
     private Button selectDateBtn;
     private Button selectTimeBtn;
     private Button confirmBtn;
+    private RadioGroup radioGroup;
     private Spinner divisionSpinner;
     private Calendar calendar = Calendar.getInstance();
-    private TinyDB tinyDB;
+    private TinyDB tinyDBForNotification;
+    private TinyDB tinyDBForRegisterHistory;
+    private AlarmManager alarmManager;
 
     private String hospitalId;
     private String hospitalName;
-    private String hospitalDivision = "無";
+    private String hospitalDivision;
     private boolean hasDivision;
+    private ArrayAdapter<CharSequence> divisionAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +53,11 @@ public class RegisterHospitalActivity extends AppCompatActivity implements View.
         getSupportActionBar().setTitle("預約醫院/診所");
         getSupportActionBar().setBackgroundDrawable(getDrawable(R.drawable.action_bar_background));
 
-        tinyDB = new TinyDB(getApplicationContext());
+        // 初始化Service
+        alarmManager = getSystemService(AlarmManager.class);
+
+        tinyDBForNotification = new TinyDB(getApplicationContext(), "registered_notification");
+        tinyDBForRegisterHistory = new TinyDB(getApplicationContext(), "registered_history");
 
         getIntentExtra();
         initView();
@@ -62,6 +70,7 @@ public class RegisterHospitalActivity extends AppCompatActivity implements View.
         selectDateBtn = findViewById(R.id.select_date_btn);
         selectTimeBtn = findViewById(R.id.select_time_btn);
         confirmBtn = findViewById(R.id.confirm_btn);
+        radioGroup = findViewById(R.id.radio_group);
 
         // 設置監聽器
         selectDateBtn.setOnClickListener(this);
@@ -72,8 +81,15 @@ public class RegisterHospitalActivity extends AppCompatActivity implements View.
 
         // 如果該醫院有多個科別，Spinner才會顯示在畫面上，否則將Spinner Remove掉
         if (hasDivision) {
-            ArrayAdapter<CharSequence> divisionAdapter = ArrayAdapter.createFromResource(this, R.array.divisions_array, android.R.layout.simple_spinner_dropdown_item);
-            divisionSpinner.setAdapter(divisionAdapter);
+            radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+                if (checkedId == R.id.option_surgical) {
+                    divisionAdapter = ArrayAdapter.createFromResource(RegisterHospitalActivity.this, R.array.surgical_department, android.R.layout.simple_spinner_dropdown_item);
+                    divisionSpinner.setAdapter(divisionAdapter);
+                } else {
+                    divisionAdapter = ArrayAdapter.createFromResource(RegisterHospitalActivity.this, R.array.medical_department, android.R.layout.simple_spinner_dropdown_item);
+                    divisionSpinner.setAdapter(divisionAdapter);
+                }
+            });
 
             divisionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -87,6 +103,7 @@ public class RegisterHospitalActivity extends AppCompatActivity implements View.
                 }
             });
         } else {
+            radioGroup.setVisibility(View.GONE);
             divisionSpinner.setVisibility(View.GONE);
         }
     }
@@ -116,8 +133,6 @@ public class RegisterHospitalActivity extends AppCompatActivity implements View.
 
     private void recordingToTinyDB() {
         calendar.set(Calendar.SECOND, 0);
-        // 去除醫院ID最後一碼後作為系統廣播的 Request Code
-        int requestCode = Integer.parseInt(hospitalId.substring(0, hospitalId.length() - 2));
 
         // 預約時間
         ArrayList<String> registerHospitalInfo =
@@ -128,20 +143,34 @@ public class RegisterHospitalActivity extends AppCompatActivity implements View.
                 ));
 
         // tiny db記錄預約時間
-        tinyDB.putListString(hospitalId, registerHospitalInfo);
+        tinyDBForNotification.putListString(hospitalId, registerHospitalInfo);
+        tinyDBForRegisterHistory.putListString(hospitalId, registerHospitalInfo);
+        setAlarmPendingIntent(registerHospitalInfo);
+    }
+
+    private void setAlarmPendingIntent(ArrayList<String> registerHospitalInfo) {
+        // 去除醫院ID最後一碼後作為系統廣播的 Request Code
+        int requestCode = Integer.parseInt(hospitalId.substring(0, hospitalId.length() - 2));
+
+        Intent removeRegistered = new Intent(this, RemoveRegisteredAlarmReceiver.class);
+        removeRegistered.putExtra("hospitalId", hospitalId);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, requestCode, removeRegistered, PendingIntent.FLAG_ONE_SHOT);
+        setRemoveRegisteredAlarm(pendingIntent);
 
         // 傳送包含預約時間的Intent到警報接收器
         Intent receiveAlarm = new Intent(this, AlarmReceiver.class);
         receiveAlarm.putStringArrayListExtra("register_hospital_info", registerHospitalInfo);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, requestCode, receiveAlarm, PendingIntent.FLAG_ONE_SHOT);
-
-        // 設置警報
-        setAlarm(pendingIntent);
+        pendingIntent = PendingIntent.getBroadcast(this, requestCode, receiveAlarm, PendingIntent.FLAG_ONE_SHOT);
+        setSendNotificationAlarm(pendingIntent);
     }
 
-    private void setAlarm(PendingIntent pendingIntent) {
-        AlarmManager alarmManager = getSystemService(AlarmManager.class);
-        // 設定警報時間為預約時間當天00:00
+    private void setRemoveRegisteredAlarm(PendingIntent pendingIntent) {
+        // 設置警報器 - 當系統時間超過使用者預約時間後，將該筆預約通知刪除
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    private void setSendNotificationAlarm(PendingIntent pendingIntent) {
+        // 設定發出通知的警報時間為預約時間當天00:00
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);

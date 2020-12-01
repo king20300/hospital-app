@@ -24,13 +24,15 @@ public class AlarmReceiver extends BroadcastReceiver {
     private String hospitalName;
     private String registerHour;
     private String registerMinute;
+    private String registerDivision;
 
     private void initRegisterInfo(Intent intent) {
         ArrayList<String> registerHospitalInfo = intent.getStringArrayListExtra("register_hospital_info");
         hospitalId = registerHospitalInfo.get(0);
         hospitalName = registerHospitalInfo.get(1);
-        registerHour = registerHospitalInfo.get(5);
-        registerMinute = registerHospitalInfo.get(6);
+        registerDivision = registerHospitalInfo.get(2);
+        registerHour = registerHospitalInfo.get(6);
+        registerMinute = registerHospitalInfo.get(7);
     }
 
     @Override
@@ -54,18 +56,16 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void sendNotification(Context context, String channelId) {
         notificationBuilder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.baseline_info_black_18dp)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle("請記得前往" + hospitalName + "看診哦!")
-                .setContentText("您已預約於今日" +
-                        registerHour + "點" +
-                        registerMinute + "分" +
-                        "於" + hospitalName + "看診，提醒您記得攜帶健保卡前往看診!")
+                .setContentText("您已預約於今日前往" + hospitalName + "看診，提醒您記得攜帶健保卡前往看診!")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText("您已預約於今日" +
-                        registerHour + "點" +
-                        registerMinute + "分" +
-                        "於" + hospitalName + "看診，提醒您記得攜帶健保卡前往看診!"))
-                .setContentIntent(
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(
+                        "您已預約於今日" + registerHour + "點" + registerMinute + "分於" +
+                        (registerDivision == null ? hospitalName : hospitalName + "的" + registerDivision) +
+                        "看診，提醒您記得攜帶健保卡前往看診!"
+                        )
+                ).setContentIntent(
                         PendingIntent.getActivity(context,
                                 Integer.parseInt(channelId),
                                 new Intent(context, ViewRegisterInfoActivity.class),

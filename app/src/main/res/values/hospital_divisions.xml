@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="divisions_array">
+    <string-array name="surgical_department">
+        <item>一般外科</item>
+        <item>心臟外科</item>
+        <item>血管外科</item>
+        <item>腦神經外科</item>
+        <item>神經外科</item>
+        <item>胸腔外科</item>
+        <item>泌尿科</item>
+        <item>兒童外科</item>
+        <item>整形外科</item>
+        <item>腦神經外科</item>
+        <item>骨科</item>
+    </string-array>
+    <string-array name="medical_department">
         <item>心臟內科</item>
         <item>精神科</item>
-        <item>胸腔外科</item>
+        <item>腎臟科</item>
+        <item>呼吸胸腔科</item>
+        <item>新陳代謝科</item>
+        <item>家醫科</item>
+        <item>胃腸肝膽科</item>
+        <item>腫瘤科</item>
+        <item>兒童內科</item>
     </string-array>
 </resources>

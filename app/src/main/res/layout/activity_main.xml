@@ -39,13 +39,23 @@
         app:layout_constraintTop_toBottomOf="@+id/search_btn" />
 
     <Button
+        android:id="@+id/my_register_history_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/register_history"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nearby_btn" />
+
+    <Button
         android:id="@+id/my_notification_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="41dp"
-        android:text="我的通知"
-        app:layout_constraintStart_toStartOf="@+id/nearby_btn"
-        app:layout_constraintTop_toBottomOf="@+id/nearby_btn" />
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="60dp"
+        android:background="@drawable/notifications"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/favorites_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

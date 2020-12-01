@@ -75,9 +75,8 @@ public class SearchHospitalActivity extends AppCompatActivity {
         Spinner districtsSpinner = findViewById(R.id.districts_spinner);
 
         ArrayAdapter<CharSequence> adapter =
-                ArrayAdapter.createFromResource(this, R.array.districts_array, android.R.layout.simple_spinner_item);
+                ArrayAdapter.createFromResource(this, R.array.districts_array, android.R.layout.simple_spinner_dropdown_item);
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         districtsSpinner.setAdapter(adapter);
 
         districtsSpinner.setSelection(indexInXml);

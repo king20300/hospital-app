@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/reg_hospital_name"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:text="TextView"
+        android:textSize="30sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/reg_hospital_date"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/reg_hospital_date"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:text="TextView"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/reg_hospital_time"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:text="TextView"
+        android:textSize="30sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="@+id/textView" />
+
+</LinearLayout>

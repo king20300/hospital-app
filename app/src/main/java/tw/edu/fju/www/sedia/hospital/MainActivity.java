@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 import tw.edu.fju.www.sedia.hospital.map.GetNearbyUtil;
+import tw.edu.fju.www.sedia.hospital.register.ViewRegisterHistoryActivity;
 import tw.edu.fju.www.sedia.hospital.register.ViewRegisterInfoActivity;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button searchBtn;
     private Button favBtn;
     private Button nearbyBtn;
+    private Button myRegisterHistoryBtn;
     private Button myNotificationBtn;
 
     @Override
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         (searchBtn = findViewById(R.id.search_btn)).setOnClickListener(this);
         (favBtn = findViewById(R.id.favorites_btn)).setOnClickListener(this);
         (nearbyBtn = findViewById(R.id.nearby_btn)).setOnClickListener(this);
+        (myRegisterHistoryBtn = findViewById(R.id.my_register_history_btn)).setOnClickListener(this);
         (myNotificationBtn = findViewById(R.id.my_notification_btn)).setOnClickListener(this);
     }
 
@@ -55,6 +58,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.nearby_btn:
                 requestPermission();
+                break;
+            case R.id.my_register_history_btn:
+                startActivity(new Intent(this, ViewRegisterHistoryActivity.class));
                 break;
             case R.id.my_notification_btn:
                 startActivity(new Intent(this, ViewRegisterInfoActivity.class));
