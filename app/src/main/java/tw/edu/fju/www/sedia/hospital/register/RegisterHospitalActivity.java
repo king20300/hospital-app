@@ -3,8 +3,11 @@ package tw.edu.fju.www.sedia.hospital.register;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Color;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,13 +17,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import tw.edu.fju.www.sedia.hospital.AlarmReceiver;
+import tw.edu.fju.www.sedia.hospital.HospitalInfoActivity;
 import tw.edu.fju.www.sedia.hospital.R;
 import tw.edu.fju.www.sedia.hospital.TinyDB;
 
@@ -37,21 +43,21 @@ public class RegisterHospitalActivity extends AppCompatActivity implements View.
     private TinyDB tinyDBForNotification;
     private TinyDB tinyDBForRegisterHistory;
     private AlarmManager alarmManager;
+    private Toolbar toolbar;
 
     private String hospitalId;
     private String hospitalName;
+    private String hospitalAddress;
+    private String hospitalTelephone;
     private String hospitalDivision;
-    private boolean hasDivision;
+    private String hasDivision;
+    private String caller;
     private ArrayAdapter<CharSequence> divisionAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_hospital);
-
-        // 設置action bar 樣式 / 標題
-        getSupportActionBar().setTitle("預約醫院/診所");
-        getSupportActionBar().setBackgroundDrawable(getDrawable(R.drawable.action_bar_background));
 
         // 初始化Service
         alarmManager = getSystemService(AlarmManager.class);
@@ -61,6 +67,8 @@ public class RegisterHospitalActivity extends AppCompatActivity implements View.
 
         getIntentExtra();
         initView();
+        initActionBar();
+        showSpinnerIfHasDivision();
     }
 
     private void initView() {
@@ -71,6 +79,7 @@ public class RegisterHospitalActivity extends AppCompatActivity implements View.
         selectTimeBtn = findViewById(R.id.select_time_btn);
         confirmBtn = findViewById(R.id.confirm_btn);
         radioGroup = findViewById(R.id.radio_group);
+        toolbar = findViewById(R.id.toolbar_for_register_hospital);
 
         // 設置監聽器
         selectDateBtn.setOnClickListener(this);
@@ -78,9 +87,19 @@ public class RegisterHospitalActivity extends AppCompatActivity implements View.
         confirmBtn.setOnClickListener(this);
 
         divisionSpinner = findViewById(R.id.division_spinner);
+    }
 
+    private void initActionBar() {
+        toolbar.setBackgroundColor(Color.rgb(255, 165, 0));
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
+
+    private void showSpinnerIfHasDivision() {
         // 如果該醫院有多個科別，Spinner才會顯示在畫面上，否則將Spinner Remove掉
-        if (hasDivision) {
+        if (hasDivision.equals("1")) {
             radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
                 if (checkedId == R.id.option_surgical) {
                     divisionAdapter = ArrayAdapter.createFromResource(RegisterHospitalActivity.this, R.array.surgical_department, android.R.layout.simple_spinner_dropdown_item);
@@ -109,9 +128,12 @@ public class RegisterHospitalActivity extends AppCompatActivity implements View.
     }
 
     private void getIntentExtra() {
+        caller = getIntent().getStringExtra("caller");
         hospitalId = getIntent().getStringExtra("hospitalId");
         hospitalName = getIntent().getStringExtra("hospitalName");
-        hasDivision = getIntent().getBooleanExtra("hasDivision", false);
+        hospitalAddress = getIntent().getStringExtra("hospitalAddress");
+        hospitalTelephone = getIntent().getStringExtra("hospitalTelephone");
+        hasDivision = getIntent().getStringExtra("hasDivision");
     }
 
     @Override
@@ -176,5 +198,18 @@ public class RegisterHospitalActivity extends AppCompatActivity implements View.
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 
         Toast.makeText(this, "預約成功", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent backToHospitalInfoPage = new Intent(this, HospitalInfoActivity.class);
+        backToHospitalInfoPage.putExtra("caller", caller);
+        backToHospitalInfoPage.putExtra("hospitalId", hospitalId);
+        backToHospitalInfoPage.putExtra("hospitalName", hospitalName);
+        backToHospitalInfoPage.putExtra("hospitalAddress", hospitalAddress);
+        backToHospitalInfoPage.putExtra("hospitalTelephone", hospitalTelephone);
+        backToHospitalInfoPage.putExtra("hasDivision", hasDivision);
+        startActivity(backToHospitalInfoPage);
+        return true;
     }
 }

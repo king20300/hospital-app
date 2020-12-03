@@ -1,12 +1,17 @@
 package tw.edu.fju.www.sedia.hospital.register;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -17,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tw.edu.fju.www.sedia.hospital.HospitalInfoActivity;
+import tw.edu.fju.www.sedia.hospital.MainActivity;
 import tw.edu.fju.www.sedia.hospital.R;
 import tw.edu.fju.www.sedia.hospital.TinyDB;
 
@@ -24,6 +30,7 @@ public class ViewRegisterHistoryActivity extends AppCompatActivity {
 
     private TinyDB tinyDB;
     private ListView registerHospitalListView;
+    private Toolbar toolbar;
 
     private static class RegisteredHistoryAdapter extends BaseAdapter {
         private Context context;
@@ -84,13 +91,9 @@ public class ViewRegisterHistoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_register_info);
+        setContentView(R.layout.activity_view_register_history);
 
         registerHospitalListView = findViewById(R.id.register_hospital_listview);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("掛號記錄");
-        actionBar.setBackgroundDrawable(getDrawable(R.drawable.action_bar_background));
 
         List<ArrayList<String>> registerHospitalsInfo = new ArrayList<>();
 
@@ -102,5 +105,22 @@ public class ViewRegisterHistoryActivity extends AppCompatActivity {
 
         RegisteredHistoryAdapter adapter = new RegisteredHistoryAdapter(this, registerHospitalsInfo);
         registerHospitalListView.setAdapter(adapter);
+
+        initActionBar();
+    }
+
+    private void initActionBar() {
+        toolbar = findViewById(R.id.toolbar_for_register_history);
+        toolbar.setBackgroundColor(Color.rgb(255, 165, 0));
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        startActivity(new Intent(this, MainActivity.class));
+        return super.onOptionsItemSelected(item);
     }
 }

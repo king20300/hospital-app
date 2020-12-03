@@ -1,13 +1,16 @@
 package tw.edu.fju.www.sedia.hospital.register;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import tw.edu.fju.www.sedia.hospital.MainActivity;
 import tw.edu.fju.www.sedia.hospital.R;
 import tw.edu.fju.www.sedia.hospital.TinyDB;
 
@@ -25,15 +29,12 @@ public class ViewRegisterInfoActivity extends AppCompatActivity {
     private TinyDB tinyDB;
     private ActionBar actionBar;
     private ListView registerNotificationList;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_register_info);
-
-        actionBar = getSupportActionBar();
-        actionBar.setTitle("我的通知");
-        actionBar.setBackgroundDrawable(getDrawable(R.drawable.action_bar_background));
 
         registerNotificationList = findViewById(R.id.register_hospital_listview);
 
@@ -44,7 +45,17 @@ public class ViewRegisterInfoActivity extends AppCompatActivity {
             registeredHospitalInfo.add(registeredHospital);
         });
 
+        initActionBar();
         showRegisteredNotification(registeredHospitalInfo);
+    }
+
+    private void initActionBar() {
+        toolbar = findViewById(R.id.toolbar_for_register_history);
+        toolbar.setBackgroundColor(Color.rgb(255, 165, 0));
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     private void showRegisteredNotification(List<ArrayList<String>> registeredHospitalInfo) {
@@ -104,5 +115,11 @@ public class ViewRegisterInfoActivity extends AppCompatActivity {
 
             return convertView;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        startActivity(new Intent(this, MainActivity.class));
+        return super.onOptionsItemSelected(item);
     }
 }

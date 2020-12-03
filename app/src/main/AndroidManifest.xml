@@ -25,11 +25,7 @@
         android:roundIcon="@drawable/app_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".register.ViewRegisterInfoActivity"
-            android:theme="@style/AppTheme.CustomActionBar" />
-        <activity android:name=".register.ViewRegisterHistoryActivity" />
-        <activity android:name=".register.RegisterHospitalActivity" />
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -43,8 +39,17 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:name=".register.RegisterHospitalActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".register.ViewRegisterHistoryActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".register.ViewRegisterInfoActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".SearchHospitalActivity"
-            android:theme="@style/AppTheme.CustomActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".map.MarkerMapsActivity"
             android:label="@string/title_activity_marker_maps" />
@@ -54,7 +59,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ListMyFavHospitalActivity"
-            android:theme="@style/AppTheme.CustomActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".WelcomePageActivity"
             android:theme="@style/AppTheme.NoActionBar">

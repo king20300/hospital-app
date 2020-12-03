@@ -7,11 +7,14 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,24 +30,47 @@ public class HospitalInfoActivity extends AppCompatActivity {
     private Button registerHospitalBtn;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    private Toolbar toolbar;
 
     private String hospitalId;
     private String hospitalName;
-    private boolean hasDivision;
+    private String hospitalAddress;
+    private String hospitalTelephone;
+    private String caller;
+    private String hasDivision;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hospital_info);
 
+        caller = getIntent().getStringExtra("caller");
+
         sharedPreferences = getSharedPreferences("favorite_hospital", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        initView();
         getIntentExtra();
+        initView();
+        initActionBar();
         onInitHospitalInfo();
         handleAddToFavBtnClicked();
         openRegisterActivity();
+    }
+
+    private void initActionBar() {
+        toolbar.setBackgroundColor(Color.rgb(255, 165, 0));
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
+
+    private void getIntentExtra() {
+        hospitalId = getIntent().getStringExtra("hospitalId");
+        hospitalName = getIntent().getStringExtra("hospitalName");
+        hospitalAddress = getIntent().getStringExtra("hospitalAddress");
+        hospitalTelephone = getIntent().getStringExtra("hospitalTelephone");
+        hasDivision = getIntent().getStringExtra("hasDivision");
     }
 
     private void initView() {
@@ -53,34 +79,29 @@ public class HospitalInfoActivity extends AppCompatActivity {
         hospitalTelephoneTextView = findViewById(R.id.hospitalTelephone);
         addToMyFavBtn = findViewById(R.id.addToMyFavBtn);
         registerHospitalBtn = findViewById(R.id.register_hospital);
-    }
-
-    private void getIntentExtra() {
-        hospitalId = getIntent().getStringExtra("hospitalId");
-        hospitalName = getIntent().getStringExtra("hospitalName");
-        hasDivision = Integer.parseInt(getIntent().getStringExtra("hasDivision")) == 1;
+        toolbar = findViewById(R.id.toolbar_for_hospital_info_activity);
     }
 
     private void openRegisterActivity() {
         Intent intent = new Intent(this, RegisterHospitalActivity.class);
+        intent.putExtra("caller", caller);
         intent.putExtra("hospitalId", hospitalId);
         intent.putExtra("hospitalName", hospitalName);
+        intent.putExtra("hospitalAddress", hospitalAddress);
+        intent.putExtra("hospitalTelephone", hospitalTelephone);
         intent.putExtra("hasDivision", hasDivision);
-        registerHospitalBtn.setOnClickListener(view -> {
-            startActivity(intent);
-        });
+        registerHospitalBtn.setOnClickListener(view -> startActivity(intent));
     }
 
     public void onInitHospitalInfo() {
         Intent intent = getIntent();
         this.hospitalNameTextView.setText(this.hospitalName);
-        this.hospitalAddressTextView.setText(intent.getStringExtra("hospitalAddress"));
+        this.hospitalAddressTextView.setText(hospitalAddress);
 
         // 設置醫院電話顏色&底線
         this.hospitalTelephoneTextView.setTextColor(Color.BLUE);
-        String telephone = intent.getStringExtra("hospitalTelephone");
-        SpannableString content = new SpannableString(telephone);
-        content.setSpan(new UnderlineSpan(), 0, telephone.length(), 0);
+        SpannableString content = new SpannableString(hospitalTelephone);
+        content.setSpan(new UnderlineSpan(), 0, hospitalTelephone.length(), 0);
         this.hospitalTelephoneTextView.setText(content);
 
         // 設置醫院地址顏色
@@ -128,5 +149,17 @@ public class HospitalInfoActivity extends AppCompatActivity {
                 addToMyFavBtn.setText("從我的最愛中移除");
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (caller != null) {
+            if (caller.equals("search_hospital_activity")) {
+                startActivity(new Intent(this, SearchHospitalActivity.class));
+            } else {  // come from list my fav hospital activity
+                startActivity(new Intent(this, ListMyFavHospitalActivity.class));
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

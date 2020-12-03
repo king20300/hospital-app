@@ -2,6 +2,7 @@ package tw.edu.fju.www.sedia.hospital;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +39,7 @@ public class ListMyFavHospitalActivity extends AppCompatActivity {
     private DBHelper dbHelper;
     private FavHospitalAdapter adapter;
     private GridView favHospitalGridView;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,19 +48,20 @@ public class ListMyFavHospitalActivity extends AppCompatActivity {
 
         favHospitalGridView = findViewById(R.id.fav_hospital_gridview);
 
-        getSupportActionBar().setBackgroundDrawable(getDrawable(R.drawable.action_bar_background));
-        getSupportActionBar().setTitle("我的最愛");
-
 //        List<String[]> resultFromSQLite = dbHelper.getResultFromSQLite((String)favHospitalIds[0], "", SearchMode.FIND_BY_ID);
 
 //        myFavHospitalName.setText(resultFromSQLite.get(0)[0]);
         listFavHospital();
+        initActionBar();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.custom_action_bar, menu);
-        return super.onCreateOptionsMenu(menu);
+    private void initActionBar() {
+        toolbar = findViewById(R.id.toolbar_for_fav_hospital_activity);
+        toolbar.setBackgroundColor(Color.rgb(255, 165, 0));
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     @Override
@@ -88,6 +92,7 @@ public class ListMyFavHospitalActivity extends AppCompatActivity {
         this.favHospitalGridView.setOnItemClickListener((parent, view, position, id) -> {
             String[] hospital = hospitals.get(position);
             Intent viewHospitalInfo = new Intent(this, HospitalInfoActivity.class);
+            viewHospitalInfo.putExtra("caller", "list_my_fav_hospital_activity");
             viewHospitalInfo.putExtra("hospitalId", hospital[0]);
             viewHospitalInfo.putExtra("hospitalName", hospital[1]);
             viewHospitalInfo.putExtra("hospitalAddress", hospital[2]);

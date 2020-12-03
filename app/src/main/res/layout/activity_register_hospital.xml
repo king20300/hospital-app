@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_marginStart="52dp"
-        android:layout_marginTop="156dp"
+        android:layout_marginTop="212dp"
         android:text="TextView"
         android:textSize="30sp"
         app:layout_constraintStart_toEndOf="@+id/select_time_btn"
@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="104dp"
         android:text="選擇預約日期"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,11 +32,14 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_marginStart="52dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="104dp"
+        android:layout_marginBottom="577dp"
         android:text="TextView"
         android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/select_date_btn"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/register_hospital_title"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/select_time_btn"
@@ -53,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="104dp"
-        android:layout_marginTop="236dp"
+        android:layout_marginTop="260dp"
         android:text="確認預約"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/selected_time" />
@@ -62,7 +65,7 @@
         android:id="@+id/division_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="168dp"
+        android:layout_marginTop="184dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.154"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,6 +99,28 @@
             tools:layout_editor_absoluteY="361dp" />
     </RadioGroup>
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_for_register_hospital"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/register_hospital_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="預約通知"
+        android:textColor="#333"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -129,7 +129,6 @@ public class DBHelper extends SQLiteOpenHelper {
                     fullInfo[3] = String.valueOf(cursor.getInt(3));
                     results.add(fullInfo);
                 }
-                break;
         }
 
         cursor.close();

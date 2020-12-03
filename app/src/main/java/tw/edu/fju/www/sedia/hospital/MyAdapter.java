@@ -2,6 +2,7 @@ package tw.edu.fju.www.sedia.hospital;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,9 +57,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 //            context.startActivity(intent);
 
             Intent intent = new Intent(activity, HospitalInfoActivity.class);
+            intent.putExtra("caller", "search_hospital_activity");
             intent.putExtra("hospitalName", specificHospitalInfo[0]);
             intent.putExtra("hospitalAddress", specificHospitalInfo[1]);
-//            System.out.println(resultFromSQLite[1]);
             intent.putExtra("hospitalTelephone", specificHospitalInfo[2]);
             intent.putExtra("hospitalId", specificHospitalInfo[3]);
             intent.putExtra("hasDivision", specificHospitalInfo[4]);

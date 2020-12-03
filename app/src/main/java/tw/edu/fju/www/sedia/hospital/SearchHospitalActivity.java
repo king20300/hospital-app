@@ -1,7 +1,9 @@
 package tw.edu.fju.www.sedia.hospital;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,10 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -37,14 +41,15 @@ public class SearchHospitalActivity extends AppCompatActivity {
     private String selectedDistrict;
     private EditText searchText;
     private SharedPreferences sharedPref;
+    private Toolbar toolbar;
+    private String caller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_hospital);
 
-        getSupportActionBar().setTitle("搜索醫院");
-        getSupportActionBar().setBackgroundDrawable(getDrawable(R.drawable.action_bar_background));
+        caller = getIntent().getStringExtra("caller");
 
         //避免鍵盤影響布局LAYOUT
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -55,8 +60,18 @@ public class SearchHospitalActivity extends AppCompatActivity {
         dbHelper = DBHelper.getInstance(this);
 
         initRecyclerView();
+        initActionBar();
         getUserSelectedDistrict();
         getHospitalInfoOnTextChange();
+    }
+
+    private void initActionBar() {
+        toolbar = findViewById(R.id.toolbar_for_search_activity);
+        toolbar.setBackgroundColor(Color.rgb(255, 165, 0));
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     private void initRecyclerView() {
@@ -153,14 +168,8 @@ public class SearchHospitalActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.custom_action_bar, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        startActivity(new Intent(this, ListMyFavHospitalActivity.class));
-        return super.onOptionsItemSelected(item);
+        startActivity(new Intent(this, MainActivity.class));
+        return true;
     }
 }
